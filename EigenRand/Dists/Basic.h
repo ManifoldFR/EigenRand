@@ -211,6 +211,11 @@ namespace Eigen
 			{
 				return derived().generate(std::forward<Urng>(urng));
 			}
+
+			template<typename Tx>
+			inline _Scalar pdf(const MatrixBase<Tx> &x) {
+				return derived().pdf(x);
+			}
 		};
 
 		/**
