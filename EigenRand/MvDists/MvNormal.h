@@ -113,6 +113,24 @@ namespace Eigen
 			{
 				return (lt * stdnorm.template generate<Matrix<_Scalar, Dim, 1>>(mean.rows(), 1, std::forward<Urng>(urng))).colwise() + mean;
 			}
+
+			template <typename Tx>
+			inline _Scalar pdf(const MatrixBase<Tx> &x) {
+				auto lt_view = lt.template triangularView<Eigen::Lower>();
+				auto e = x - mean;
+				auto lt_inv_x = lt_view.solve(e);
+				_Scalar quad = 0.5 * lt_inv_x.squaredNorm();
+				// dimension
+				Index n = dims();
+				_Scalar den = std::sqrt(std::pow(2 *M_PI, n) * det());
+				return std::exp(-quad) / den;
+			}
+
+		private:
+			inline _Scalar det() const {
+				auto d = lt.diagonal();
+				return d.prod();
+			}
 		};
 
     namespace detail {
